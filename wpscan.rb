@@ -27,6 +27,7 @@ banner()
 
 begin
   wpscan_options = WpscanOptions.load_from_arguments
+  output         = ConsoleOutput.new
 
   unless wpscan_options.has_options?
     raise "No argument supplied\n#{usage()}"
@@ -87,142 +88,49 @@ begin
   end
 
   # Output runtime data
-  puts "| URL: #{wp_target.url}"
-  puts "| Started on #{Time.now.asctime}"
-  puts
+  output.start_message(wp_target.url)
 
   # Can we identify the theme name?
   if wp_theme = wp_target.theme
-    theme_version = wp_theme.version
-    puts "[!] The WordPress theme in use is #{wp_theme}"
-
-    theme_vulnerabilities = wp_theme.vulnerabilities
-    unless theme_vulnerabilities.empty?
-      puts "[+] We have identified #{theme_vulnerabilities.size} vulnerabilities for this theme :"
-      theme_vulnerabilities.each do |vulnerability|
-        puts
-        puts " | * Title: " + vulnerability.title
-        puts " | * Reference: " + vulnerability.reference
-      end
-      puts
-    end
+    output.wp_theme(wp_theme)
   end
 
   # Is the readme.html file there?
   if wp_target.has_readme?
-    puts "[!] The WordPress '#{wp_target.readme_url}' file exists"
+    output.wp_readme(wp_target.readme_url)
   end
 
   # Full Path Disclosure (FPD)?
   if wp_target.has_full_path_disclosure?
-    puts "[!] Full Path Disclosure (FPD) in '#{wp_target.full_path_disclosure_url}'"
+    output.full_path_disclosure(wp_target.full_path_disclosure_url)
   end
 
-  # Is the wp-config.php file backed up?
-  wp_target.config_backup.each do |file_url|
-    puts "[!] A wp-config.php backup file has been found '#{file_url}'"
-  end
+  output.wp_config_backup(wp_target.config_backup)
 
   # Checking for malwares
   if wp_target.has_malwares?
-    malwares = wp_target.malwares
-    puts "[!] #{malwares.size} malware(s) found :"
-
-    malwares.each do |malware_url|
-      puts
-      puts " | " + malware_url
-    end
-    puts
+    output.malwares(wp_target.malwares)
   end
 
   # Checking the version...
   if wp_version = wp_target.version
-    puts "[!] WordPress version #{wp_version.number} identified from #{wp_version.discovery_method}"
-
-    # Are there any vulnerabilities associated with this version?
-    version_vulnerabilities = wp_version.vulnerabilities
-
-    unless version_vulnerabilities.empty?
-      puts
-      puts "[+] We have identified #{version_vulnerabilities.size} vulnerabilities from the version number :"
-      version_vulnerabilities.each do |vulnerability|
-        puts
-        puts " | * Title: " + vulnerability.title
-        puts " | * Reference: " + vulnerability.reference
-      end
-    end
+    output.wp_version(wp_version)
   end
 
   # Plugins from passive detection
-  puts
-  print "[+] Enumerating plugins from passive detection ... "
-
-  plugins = wp_target.plugins_from_passive_detection
-  unless plugins.empty?
-    print "#{plugins.size} found :\n"
-
-    plugins.each do |plugin|
-      puts
-      puts " | Name: " + plugin.name
-      puts " | Location: " + plugin.location_url
-
-      plugin.vulnerabilities.each do |vulnerability|
-        puts " |"
-        puts " | [!] " + vulnerability.title
-        puts " | * Reference: " + vulnerability.reference
-      end
-    end
-  else
-    print "No plugins found :(\n"
-  end
+  output.wp_plugins_from_passive_detection(wp_target.plugins_from_passive_detection)
 
   # Enumerate the installed plugins
   if wpscan_options.enumerate_plugins or wpscan_options.enumerate_only_vulnerable_plugins
-    puts
-    puts "[+] Enumerating installed plugins #{'(only vulnerable ones)' if wpscan_options.enumerate_only_vulnerable_plugins} ..."
-    puts
 
-    plugins = wp_target.plugins_from_aggressive_detection(
-      :only_vulnerable_ones => wpscan_options.enumerate_only_vulnerable_plugins,
-      :show_progress_bar => true
+    output.enumerate_plugins_message(wpscan_options.enumerate_only_vulnerable_plugins)
+
+    output.wp_plugins_from_aggressive_detection(
+      wp_target.plugins_from_aggressive_detection(
+        :only_vulnerable_ones => wpscan_options.enumerate_only_vulnerable_plugins,
+        :show_progress_bar => output.show_progress_bar?
+      )
     )
-    unless plugins.empty?
-      puts
-      puts
-      puts "[+] We found " + plugins.size.to_s  + " plugins:"
-
-      plugins.each do |plugin|
-        puts
-        puts " | Name: " + plugin.name
-        puts " | Location: " + plugin.location_url
-
-        puts " | Directory listing enabled? #{plugin.directory_listing? ? "Yes." : "No."}"
-
-        plugin.vulnerabilities.each do |vulnerability|
-          #vulnerability['vulnerability'][0]['uri'] == nil ? "" : uri = vulnerability['vulnerability'][0]['uri'] # uri
-          #vulnerability['vulnerability'][0]['postdata'] == nil ? "" : postdata = CGI.unescapeHTML(vulnerability['vulnerability'][0]['postdata']) # postdata
-
-          puts " |"
-          puts " | [!] " + vulnerability.title
-          puts " | * Reference: " + vulnerability.reference
-
-          # This has been commented out as MSF are moving from
-          # XML-RPC to MessagePack.
-          # I need to get to grips with the new way of communicating
-          # with MSF and implement new code.
-
-          # check if vuln is exploitable
-          #Exploit.new(url, type, uri, postdata.to_s, use_proxy, proxy_addr, proxy_port)
-        end
-
-        if plugin.error_log?
-          puts " | [!] A WordPress error_log file has been found : " + plugin.error_log_url
-        end
-      end
-    else
-      puts
-      puts "No plugins found :("
-    end
   end
 
   # try to find timthumb files

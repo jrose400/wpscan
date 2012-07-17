@@ -1,14 +1,15 @@
 
-LIB_DIR = File.dirname(__FILE__)
-ROOT_DIR = File.expand_path(LIB_DIR + '/..') # expand_path is used to get "wpscan/" instead of "wpscan/lib/../"
-DATA_DIR = ROOT_DIR + "/data"
-CONF_DIR = ROOT_DIR + "/conf"
-CACHE_DIR = ROOT_DIR + "/cache"
-WPSCAN_LIB_DIR = LIB_DIR + "/wpscan"
+LIB_DIR          = File.dirname(__FILE__)
+ROOT_DIR         = File.expand_path(LIB_DIR + '/..') # expand_path is used to get "wpscan/" instead of "wpscan/lib/../"
+DATA_DIR         = ROOT_DIR + "/data"
+CONF_DIR         = ROOT_DIR + "/conf"
+CACHE_DIR        = ROOT_DIR + "/cache"
+WPSCAN_LIB_DIR   = LIB_DIR + "/wpscan"
 WPSTOOLS_LIB_DIR = LIB_DIR + "/wpstools"
-UPDATER_LIB_DIR = LIB_DIR + "/updater"
+UPDATER_LIB_DIR  = LIB_DIR + "/updater"
+OUTPUT_LIB_DIR   = LIB_DIR + "/output"
 
-WPSCAN_VERSION = "2.0"
+WPSCAN_VERSION   = "2.0"
 
 require "#{LIB_DIR}/environment"
 
