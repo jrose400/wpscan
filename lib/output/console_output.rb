@@ -152,4 +152,48 @@ class ConsoleOutput < Output
     end
   end
 
+  def enumerate_timthumbs_message
+    puts
+    puts "[+] Enumerating timthumb files ..."
+    puts
+  end
+
+  def wp_timthumbs(wp_timthumbs)
+    unless wp_timthumbs.empty?
+      puts
+      puts "[+] We found " + wp_timthumbs.size.to_s  + " timthumb file/s :"
+      puts
+
+      wp_timthumbs.each do |file_url|
+        puts " | [!] " +  file_url
+      end
+      puts
+      puts " * Reference: http://www.exploit-db.com/exploits/17602/"
+    else
+      puts
+      puts "No timthumb files found :("
+    end
+  end
+
+  def enumerate_usernames_message
+    puts
+    puts "[+] Enumerating usernames ..."
+  end
+
+  def wp_usernames(wp_usernames)
+    if wp_usernames.empty?
+      puts
+      puts "We did not enumerate any usernames :("
+      puts "Try supplying your own username with the --username option"
+      puts
+      exit(1)
+    else
+      puts
+      puts "We found the following " + wp_usernames.length.to_s + " username/s :"
+      puts
+
+      wp_usernames.each {|username| puts "  " + username}
+    end
+  end
+
 end

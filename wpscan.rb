@@ -135,49 +135,19 @@ begin
 
   # try to find timthumb files
   if wpscan_options.enumerate_timthumbs
-    puts
-    puts "[+] Enumerating timthumb files ..."
-    puts
-
-    if wp_target.has_timthumbs?(:theme_name => wp_theme ? wp_theme.name : nil, :show_progress_bar => true)
-      timthumbs = wp_target.timthumbs
-
-      puts
-      puts "[+] We found " + timthumbs.size.to_s  + " timthumb file/s :"
-      puts
-
-      timthumbs.each do |file_url|
-        puts " | [!] " +  file_url
-      end
-      puts
-      puts " * Reference: http://www.exploit-db.com/exploits/17602/"
-    else
-      puts
-      puts "No timthumb files found :("
-    end
+    output.enumerate_timthumbs_message()
+    output.wp_timthumbs(
+      wp_target.timthumbs(:theme_name => wp_theme ? wp_theme.name : nil, :show_progress_bar => output.show_progress_bar?)
+    )
   end
 
   # If we haven't been supplied a username, enumerate them...
   if !wpscan_options.username and wpscan_options.wordlist or wpscan_options.enumerate_usernames
-    puts
-    puts "[+] Enumerating usernames ..."
+
+    output.enumerate_usernames_message()
 
     usernames = wp_target.usernames(:range => wpscan_options.enumerate_usernames_range)
-
-    if usernames.empty?
-      puts
-      puts "We did not enumerate any usernames :("
-      puts "Try supplying your own username with the --username option"
-      puts
-      exit(1)
-    else
-      puts
-      puts "We found the following " + usernames.length.to_s + " username/s :"
-      puts
-
-      usernames.each {|username| puts "  " + username}
-    end
-
+    output.wp_usernames(usernames)
   else
     usernames = [wpscan_options.username]
   end
