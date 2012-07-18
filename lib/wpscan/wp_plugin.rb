@@ -45,7 +45,7 @@ class WpPlugin < Vulnerable
   # http://code.google.com/p/wpscan/issues/detail?id=97
   def version
     response = Browser.instance.get(@location_uri.merge("readme.txt").to_s)
-    response.body[%r{stable tag: #{WpVersion.version_pattern}}i, 1]
+    @version = response.body[%r{stable tag: #{WpVersion.version_pattern}}i, 1]
   end
 
   # Discover any error_log files created by WordPress
@@ -54,7 +54,7 @@ class WpPlugin < Vulnerable
   # however can also be found in their specific plugin dir.
   # http://www.exploit-db.com/ghdb/3714/
   def error_log?
-    Browser.instance.get(error_log_url()).body[%r{PHP Fatal error}i] ? true : false
+    @error_log = Browser.instance.get(error_log_url()).body[%r{PHP Fatal error}i] ? true : false
   end
 
   def error_log_url
@@ -65,7 +65,7 @@ class WpPlugin < Vulnerable
   # WordPress denies directory listing however,
   # forgets about the plugin directory.
   def directory_listing?
-    Browser.instance.get(location_url()).body[%r{<title>Index of}] ? true : false
+    @directory_listing = Browser.instance.get(location_url()).body[%r{<title>Index of}] ? true : false
   end
 
   def self.create_location_url_from_name(name, target_uri)

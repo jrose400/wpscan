@@ -50,9 +50,9 @@ class ConsoleOutput < Output
   end
 
   # param string target_url
-  def start_message(target_url)
+  def start_message(target_url, start_time)
     puts "| URL: #{target_url}"
-    puts "| Started on #{Time.now.asctime}"
+    puts "| Started on #{start_time.asctime}"
     puts
   end
 
@@ -253,9 +253,9 @@ class ConsoleOutput < Output
     puts message
   end
 
-  def end_message
+  def end_message(end_time)
     puts
-    puts "[+] Finished at #{Time.now.asctime}"
+    puts "[+] Finished at #{end_time.asctime}"
   end
 
 end

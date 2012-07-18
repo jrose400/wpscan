@@ -27,7 +27,7 @@ banner()
 
 begin
   wpscan_options = WpscanOptions.load_from_arguments
-  output         = ConsoleOutput.new
+  output         = YamlOutput.new
 
   unless wpscan_options.has_options?
     raise "No argument supplied\n#{usage()}"
@@ -87,7 +87,7 @@ begin
   end
 
   # Output runtime data
-  output.start_message(wp_target.url)
+  output.start_message(wp_target.url, Time.now)
 
   # Can we identify the theme name?
   if wp_theme = wp_target.theme
@@ -184,7 +184,7 @@ begin
     end
   end
 
-  output.end_message()
+  output.end_message(Time.now)
   exit() # must exit!
 rescue => e
   puts "[ERROR] #{e}"
