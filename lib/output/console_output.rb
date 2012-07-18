@@ -20,7 +20,33 @@ require File.dirname(__FILE__) + "/output"
 class ConsoleOutput < Output
 
   def initialize(options = {})
-    super(options.merge(:show_progress_bar => true))
+    super(options.merge(:show_progress_bar => true, :has_user_interaction => true))
+  end
+
+  def updater_update(update_results)
+    puts update_results
+  end
+
+  def updater_not_available
+    puts "Svn / Git not installed, or wpscan has not been installed with one of them."
+    puts "Update aborted"
+  end
+
+  def following_redirection(redirection)
+    puts "Following redirection #{redirection}"
+    puts
+  end
+
+  def redirection_detected(redirection)
+    puts "The remote host tried to redirect us to #{redirection}"
+  end
+
+  def follow_redirection_question
+    puts "Do you want follow the redirection ? [y/n]"
+  end
+
+  def scan_aborted
+    puts "Scan aborted"
   end
 
   # param string target_url
@@ -194,6 +220,42 @@ class ConsoleOutput < Output
 
       wp_usernames.each {|username| puts "  " + username}
     end
+  end
+
+  def protection_plugin_detected(plugin)
+    puts
+    puts "The plugin #{plugin.name} has been detected. It might record the IP and timestamp of every failed login. Not a good idea for brute forcing !"
+  end
+
+  def start_brute_force_question
+    puts "[?] Do you want to start the brute force anyway ? [y/n]"
+  end
+
+  def brute_force_aborted
+    puts "Brute forcing aborted"
+  end
+
+  def starting_brute_force
+    puts
+    puts "[+] Starting the password brute forcer"
+    puts
+  end
+
+  def verbose(message)
+    puts message
+  end
+
+  def password_found(username, password)
+    puts "\n  [SUCCESS] Username : #{username} Password : #{password}\n"
+  end
+
+  def error(message)
+    puts message
+  end
+
+  def end_message
+    puts
+    puts "[+] Finished at #{Time.now.asctime}"
   end
 
 end

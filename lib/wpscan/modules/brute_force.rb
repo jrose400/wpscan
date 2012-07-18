@@ -22,10 +22,12 @@ module BruteForce
 
   # param array of string logins
   # param string wordlist_path
-  def brute_force(logins, wordlist_path)
+  def brute_force(logins, wordlist_path, options = {})
     hydra               = Browser.instance.hydra
     number_of_passwords = BruteForce.lines_in_file(wordlist_path)
     login_url           = login_url()
+    show_progress_bar   = options[:show_progress_bar] || false
+    output              = options[:output] || ConsoleOutput.new
 
     logins.each do |login|
       queue_count    = 0
@@ -55,25 +57,25 @@ module BruteForce
         # tell hydra what to do when the request completes
         request.on_complete do |response|
 
-          puts "\n  Trying Username : #{username} Password : #{password}" if @verbose
+          output.verbose("\n  Trying Username : #{username} Password : #{password}") if @verbose
 
           if response.body =~ /login_error/i
-            puts "\nIncorrect username and/or password." if @verbose
+            output.verbose("\nIncorrect username and/or password.") if @verbose
           elsif response.code == 302
-            puts "\n  [SUCCESS] Username : #{username} Password : #{password}\n"
+            output.password_found(username, password)
             password_found = true
           elsif response.timed_out?
-            puts "ERROR: Request timed out."
+            output.error("ERROR: Request timed out.")
           elsif response.code == 0
-            puts "ERROR: No response from remote server. WAF/IPS?"
+            output.error("ERROR: No response from remote server. WAF/IPS?")
           elsif response.code =~ /^50/
-            puts "ERROR: Server error, try reducing the number of threads."
+            output.error("ERROR: Server error, try reducing the number of threads.")
           else
-            puts "\nERROR: We recieved an unknown response for #{password}..."
+            output.error("\nERROR: We recieved an unknown response for #{password}...")
+
             if @verbose
-              puts 'Code: ' + response.code.to_s
-              puts 'Body: ' + response.body
-              puts
+              output.verbose("Code: #{response.code}")
+              output.verbose("Body: #{response.body}")
             end
           end
         end
@@ -85,7 +87,7 @@ module BruteForce
         hydra.queue(request)
 
         # progress indicator
-        print "\r  Brute forcing user '#{username}' with #{number_of_passwords} passwords... #{(request_count * 100) / number_of_passwords}% complete."
+        print "\r  Brute forcing user '#{username}' with #{number_of_passwords} passwords... #{(request_count * 100) / number_of_passwords}% complete." if show_progress_bar
 
         # it can take a long time to queue 2 million requests,
         # for that reason, we queue @threads, send @threads, queue @threads and so on.
@@ -95,7 +97,7 @@ module BruteForce
         if queue_count >= Browser.instance.max_threads
           hydra.run
           queue_count = 0
-          puts "Sent #{Browser.instance.max_threads} requests ..." if @verbose
+          output.verbose("Sent #{Browser.instance.max_threads} requests ...") if @verbose
         end
       end
 

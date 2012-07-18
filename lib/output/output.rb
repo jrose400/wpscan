@@ -18,11 +18,16 @@
 class Output
 
   def initialize(options = {})
-    @show_progress_bar = options[:show_progress_bar] || false
+    @show_progress_bar    = options[:show_progress_bar] || false
+    @has_user_interaction = options[:has_user_interaction] || false
   end
 
   def show_progress_bar?
     @show_progress_bar
+  end
+
+  def has_user_interaction?
+    @has_user_interaction
   end
 
 end

@@ -41,10 +41,9 @@ begin
   # Check for updates
   if wpscan_options.update
     unless @updater.nil?
-      puts @updater.update()
+      output.updater_update(@updater.update())
     else
-      puts "Svn / Git not installed, or wpscan has not been installed with one of them."
-      puts "Update aborted"
+      output.updater_not_available()
     end
     exit(1)
   end
@@ -58,19 +57,19 @@ begin
 
   if redirection = wp_target.redirection
     if wpscan_options.follow_redirection
-      puts "Following redirection #{redirection}"
-      puts
+      output.following_redirection(redirection)
     else
-      puts "The remote host tried to redirect us to #{redirection}"
-      puts "Do you want follow the redirection ? [y/n]"
+      output.redirection_detected(redirection)
+
+      output.follow_redirection_question() if output.has_user_interaction?
     end
 
-    if wpscan_options.follow_redirection or Readline.readline =~ /^y/i
+    if wpscan_options.follow_redirection or (output.has_user_interaction? and Readline.readline =~ /^y/i)
       wpscan_options.url = redirection
       wp_target = WpTarget.new(redirection, wpscan_options.to_h)
     else
-      puts "Scan aborted"
-      exit
+      output.scan_aborted()
+      exit(1)
     end
   end
 
@@ -154,32 +153,38 @@ begin
 
   # Start the brute forcer
   if wpscan_options.wordlist
+    bruteforce = false
+
     if wp_target.has_login_protection?
 
       protection_plugin = wp_target.login_protection_plugin()
 
-      puts
-      puts "The plugin #{protection_plugin.name} has been detected. It might record the IP and timestamp of every failed login. Not a good idea for brute forcing !"
-      puts "[?] Do you want to start the brute force anyway ? [y/n]"
+      output.protection_plugin_detected(protection_plugin)
 
-      if Readline.readline !~ /^y/i
-        bruteforce = false
+      if output.has_user_interaction?
+        output.start_brute_force_question()
+
+        if Readline.readline =~ /^y/i
+          bruteforce = true
+        end
       end
     end
 
     if bruteforce === false
-      puts
-      puts "Brute forcing aborted"
+      output.brute_force_aborted()
     else
-      puts
-      puts "[+] Starting the password brute forcer"
-      puts
-      wp_target.brute_force(usernames, wpscan_options.wordlist)
+      output.starting_brute_force()
+
+      wp_target.brute_force(
+        usernames,
+        wpscan_options.wordlist,
+        :show_progress_bar => output.show_progress_bar?,
+        :output => output
+      )
     end
   end
 
-  puts
-  puts '[+] Finished at ' + Time.now.asctime
+  output.end_message()
   exit() # must exit!
 rescue => e
   puts "[ERROR] #{e}"
