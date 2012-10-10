@@ -106,6 +106,8 @@ WPScan comes pre-installed on BackTrack5 R1 in the /pentest/web/wpscan directory
 
 --username | -U <username>  Only brute force the supplied username.
 
+--logfile  | -l  Log to a file instead of writing to stdout. 
+
 --help     | -h This help screen.
 
 --verbose  | -v Verbose output.
