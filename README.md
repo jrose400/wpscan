@@ -91,6 +91,8 @@ WPScan only supports Ruby => 1.9.
 
     --username | -U <username>  Only brute force the supplied username.
 
+    --logfile  | -l  Log to a file instead of writing to stdout. 
+
     --help     | -h This help screen.
 
     --verbose  | -v Verbose output.
