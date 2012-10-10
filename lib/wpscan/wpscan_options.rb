@@ -39,13 +39,13 @@ class WpscanOptions
       :wp_content_dir,
       :wp_plugins_dir,
       :help,
-      :config_file
+      :config_file,
+      :logfile
   ]
 
   attr_accessor *ACCESSOR_OPTIONS
 
   def initialize
-
   end
 
   def url=(url)
@@ -201,7 +201,8 @@ class WpscanOptions
         ["--follow-redirection", GetoptLong::NO_ARGUMENT],
         ["--wp-content-dir", GetoptLong::REQUIRED_ARGUMENT],
         ["--wp-plugins-dir", GetoptLong::REQUIRED_ARGUMENT],
-        ["--config-file", "-c", GetoptLong::REQUIRED_ARGUMENT]
+        ["--config-file", "-c", GetoptLong::REQUIRED_ARGUMENT],
+        ["--logfile", "-l", GetoptLong::NO_ARGUMENT]
     )
   end
 

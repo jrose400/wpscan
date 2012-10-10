@@ -72,6 +72,14 @@ begin
     end
   end
 
+  # Forces output to logfile if set
+  if wpscan_options.logfile
+    output_file = "wpscan-#{Time.now.strftime('%Y%m%d-%H%M%S')}"
+    puts "Results saved to '#{output_file}'"
+    $stdout = File.new(output_file, 'w')  
+    @logfile= true
+  end
+
   # Remote website is wordpress?
   unless wpscan_options.force
     unless wp_target.is_wordpress?
@@ -204,7 +212,7 @@ begin
     options = {}
     options[:base_url]              = wp_target.uri
     options[:only_vulnerable_ones]  = wpscan_options.enumerate_only_vulnerable_plugins || false
-    options[:show_progress_bar]     = true
+    options[:show_progress_bar]     = wpscan_options.logfile ? false : true
     options[:wp_content_dir]        = wp_target.wp_content_dir
     options[:error_404_hash]        = wp_target.error_404_hash
     options[:wp_plugins_dir]        = wp_target.wp_plugins_dir
@@ -259,7 +267,7 @@ begin
     options = {}
     options[:base_url]              = wp_target.uri
     options[:only_vulnerable_ones]  = wpscan_options.enumerate_only_vulnerable_themes || false
-    options[:show_progress_bar]     = true
+    options[:show_progress_bar]     = wpscan_options.logfile ? false : true
     options[:wp_content_dir]        = wp_target.wp_content_dir
     options[:error_404_hash]        = wp_target.error_404_hash
 
@@ -304,7 +312,7 @@ begin
 
     options = {}
     options[:base_url]          = wp_target.uri
-    options[:show_progress_bar] = true
+    options[:show_progress_bar] = wpscan_options.logfile ? false : true
     options[:wp_content_dir]    = wp_target.wp_content_dir
     options[:error_404_hash]    = wp_target.error_404_hash
 

@@ -24,6 +24,7 @@ CACHE_DIR         = ROOT_DIR + "/cache"
 WPSCAN_LIB_DIR    = LIB_DIR + "/wpscan"
 WPSTOOLS_LIB_DIR  = LIB_DIR + "/wpstools"
 UPDATER_LIB_DIR   = LIB_DIR + "/updater"
+@logfile = false
 
 WPSCAN_VERSION = "2.0"
 
@@ -123,7 +124,11 @@ def banner()
 end
 
 def colorize(text, color_code)
-  "\e[#{color_code}m#{text}\e[0m"
+  if @logfile
+    return text
+  else
+    "\e[#{color_code}m#{text}\e[0m"
+  end
 end
 
 def red(text)

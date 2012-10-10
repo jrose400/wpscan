@@ -98,6 +98,7 @@ def help()
   puts "--wordlist | -w <wordlist>  Supply a wordlist for the password bruter and do the brute."
   puts "--threads  | -t <number of threads>  The number of threads to use when multi-threading requests. (will override the value from conf/browser.conf.json)"
   puts "--username | -U <username>  Only brute force the supplied username."
+  puts "--logfile  | -l   Log to a file instead of writing to stdout."
   puts "--help     | -h This help screen."
   puts "--verbose  | -v Verbose output."
   puts

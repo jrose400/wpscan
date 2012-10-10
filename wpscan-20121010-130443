@@ -1,0 +1,55 @@
+| URL: http://localhost:8888/
+| Started on Wed Oct 10 13:04:43 2012
+
+[+] The WordPress theme in use is ali-han-neon v1.9.8
+[!] The WordPress 'http://localhost:8888/readme.html' file exists
+[+] WordPress version 3.4.2 identified from advanced fingerprinting
+
+[+] Enumerating installed plugins  ...
+
+
+
+[+] We found 8 plugins:
+
+ | Name: 6scan-protection
+ | Location: http://localhost:8888/wp-content/plugins/6scan-protection/
+ | Readme: http://localhost:8888/wp-content/plugins/6scan-protection/readme.txt
+
+ | Name: akismet v2.5.6
+ | Location: http://localhost:8888/wp-content/plugins/akismet/
+ | Readme: http://localhost:8888/wp-content/plugins/akismet/readme.txt
+
+ | Name: bulletproof-security v.47.4
+ | Location: http://localhost:8888/wp-content/plugins/bulletproof-security/
+ | Directory listing enabled: Yes
+ | Readme: http://localhost:8888/wp-content/plugins/bulletproof-security/readme.txt
+ |
+ | [!] BulletProof Security <= 0.47 Cross Site Scripting
+ | * Reference: http://packetstormsecurity.org/files/112618/
+
+ | Name: google-sitemap-generator v3.2.7
+ | Location: http://localhost:8888/wp-content/plugins/google-sitemap-generator/
+ | Directory listing enabled: Yes
+ | Readme: http://localhost:8888/wp-content/plugins/google-sitemap-generator/readme.txt
+
+ | Name: share-this
+ | Location: http://localhost:8888/wp-content/plugins/share-this/
+ | Directory listing enabled: Yes
+ | Readme: http://localhost:8888/wp-content/plugins/share-this/readme.txt
+
+ | Name: simple-cart-buy-now v1.4.1
+ | Location: http://localhost:8888/wp-content/plugins/simple-cart-buy-now/
+ | Directory listing enabled: Yes
+ | Readme: http://localhost:8888/wp-content/plugins/simple-cart-buy-now/readme.txt
+
+ | Name: wordfence
+ | Location: http://localhost:8888/wp-content/plugins/wordfence/
+ | Directory listing enabled: Yes
+
+ | Name: wp-security-scan
+ | Location: http://localhost:8888/wp-content/plugins/wp-security-scan/
+ | Directory listing enabled: Yes
+ | Readme: http://localhost:8888/wp-content/plugins/wp-security-scan/readme.txt
+
+[+] Finished at Wed Oct 10 13:04:44 2012
+[+] Elapsed time: 00:00:01
