@@ -66,6 +66,10 @@ class WpscanOptions
     end
   end
 
+  def logfile=(logfile)
+    @logfile = logfile
+  end
+
   def proxy=(proxy)
     if proxy.index(':') == nil
       raise "Invalid proxy format. Should be host:port."
@@ -202,7 +206,7 @@ class WpscanOptions
         ["--wp-content-dir", GetoptLong::REQUIRED_ARGUMENT],
         ["--wp-plugins-dir", GetoptLong::REQUIRED_ARGUMENT],
         ["--config-file", "-c", GetoptLong::REQUIRED_ARGUMENT],
-        ["--logfile", "-l", GetoptLong::NO_ARGUMENT]
+        ["--logfile", "-l", GetoptLong::REQUIRED_ARGUMENT]
     )
   end
 
