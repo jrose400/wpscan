@@ -41,17 +41,15 @@ begin
   # Output logging
   Configurator.custom_levels('VULN', 'WARN', 'INFO')
   log = Log4r::Logger.new('logtest')
-  #log.level = Log4r::INFO
 
   if wpscan_options.logfile
     output_file = wpscan_options.logfile
     file = FileOutputter.new('fileOutputter', :filename => output_file,:trunc => false)
     log.add(file)
     
-    pf = PatternFormatter.new(:pattern => "%d %m")
+    pf = PatternFormatter.new(:pattern => "%d %l %m")
     file.formatter = pf
-
-    #@logfile= true
+    puts "Report saved to '#{wpscan_options.logfile}'"
   else
     screen = Outputter.stdout
     pf = PatternFormatter.new(:pattern => "%l %m")
