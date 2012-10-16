@@ -39,7 +39,7 @@ begin
   end
 
   # Output logging
-  Configurator.custom_levels('VULN', 'WARN', 'INFO')
+  Configurator.custom_levels('ERROR','VULN', 'WARN', 'INFO')
   log = Log4r::Logger.new('logtest')
 
   if wpscan_options.logfile
@@ -382,7 +382,7 @@ begin
   log.info "[+] Elapsed time: #{Time.at(elapsed).utc.strftime("%H:%M:%S")}"
   exit() # must exit!
 rescue => e
-  puts "[ERROR] #{e.message}"
-  puts "Trace :"
-  puts e.backtrace.join("\n")
+  log.error "[ERROR] #{e.message}"
+  log.error "Trace :"
+  log.error  e.backtrace.join("\n")
 end
